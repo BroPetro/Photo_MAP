@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>PhotoMAP</title>
+
+    <link rel="icon" href="icons/icon-500x500-remove-bg.png">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#111111">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="PhotoMap">
+    <link rel="apple-touch-icon" href="icons/icon-192x192.png">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="Style/index.css">
+</head>
+<body>
+
+<div id="map"></div>
+<div class="downbutton">
+  <button class="button_search"><img src="icons/Search.png"></button>
+  <button class="button_create"><img src="icons/AddPhoto2.png"></button>
+  <button class="button_profile"><img src="icons/Accaunt.png"></button>
+</div>
+
+<button class="button_lacation"><img src="icons/MyLocation2.png"></button>
+
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script src="Script/Map.js"></script>
+<script src="Script/index.js"></script>
+<script>
+if ("serviceWorker" in navigator) {
+    window.addEventListener("load", () => {
+        navigator.serviceWorker.register("./sw.js");
+    });
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,101 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>PhotoMAP | Авторизація</title>
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+
+    <link rel="icon" href="icons/icon-500x500-remove-bg.png">
+
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="Style/register.css">
+</head>
+
+<body>
+
+    <!-- Карта -->
+    <div id="map"></div>
+
+    <!-- Контейнер -->
+    <div class="container">
+
+        <!-- Логотип -->
+        <div class="logo">
+            <h1>PhotoMAP</h1>
+        </div>
+
+        <!-- Вікно -->
+        <div class="login-box">
+
+            <!-- Заголовок -->
+            <h2 id="title">Вхід</h2>
+
+            <!-- Ім'я -->
+            <input
+                type="text"
+                id="username"
+                placeholder="Ім'я користувача"
+                style="display:none;"
+            >
+
+            <!-- Email -->
+            <input
+                type="email"
+                id="email"
+                placeholder="Email"
+            >
+
+            <!-- Пароль -->
+            <input
+                type="password"
+                id="password"
+                placeholder="Пароль"
+            >
+
+            <!-- Повторити пароль -->
+            <input
+                type="password"
+                id="password2"
+                placeholder="Повторіть пароль"
+                style="display:none;"
+            >
+
+            <!-- Основна кнопка -->
+            <button id="mainButton" class="login">
+                Увійти
+            </button>
+
+            <!-- Розділювач -->
+            <div class="line">
+                <span>або</span>
+            </div>
+
+            <!-- Google -->
+            <button id="googleButton" class="google">
+                Увійти через Google
+            </button>
+
+            <!-- Перемикач -->
+            <p class="register">
+
+                <span id="switchText">
+                    Немає акаунта?
+                </span>
+
+                <span id="switchMode">
+                    Створити
+                </span>
+            </p>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+
+    <script src="Script/Map_login.js"></script>
+
+    <script type="module" src="Script/register.js"></script>
+
+</body>
+</html>

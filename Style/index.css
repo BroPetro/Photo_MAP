@@ -1,0 +1,197 @@
+        html, body {
+            margin: 0;
+            height: 100%;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+
+        .downbutton {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            width: 50%;
+            height: 70px;
+
+            border-radius: 35px;
+
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .downbutton {
+                left: 10px;
+                right: 10px;
+                width: auto;
+                transform: none;
+            }
+        }
+        .button_search {
+            width: 31%;
+            height: 90%;
+
+             border-radius: 35px;
+
+             position: fixed;
+             bottom: 5%;
+             left: 1%;
+
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+
+            z-index: 1000;
+
+            transition: all 0.3s ease;
+        }
+
+        .button_create {
+            width: 31%;
+            height: 90%;
+
+            border-radius: 35px;
+
+            position: fixed;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+
+            z-index: 1000;
+
+             transition: all 0.3s ease;
+        }   
+
+        .button_profile {
+            width: 31%;
+            height: 90%;
+
+            border-radius: 35px;
+
+            position: fixed;
+            bottom: 5%;
+            right: 1%;
+
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+
+                box-shadow:
+                    0 8px 30px rgba(0, 0, 0, 0.15),
+                    inset 0 1px 1px rgba(255, 255, 255, 0.4);
+
+            z-index: 1000;
+
+            transition: all 0.3s ease;
+        }   
+
+        .button_create:hover {
+            transform: translateX(-50%) scale(1.08);
+            border-radius: 45px;
+        }
+
+
+        .button_search:hover {
+            transform: scale(1.08);
+            border-radius: 45px;
+        }
+
+        .button_profile:hover {
+            transform: scale(1.08);
+            border-radius: 45px;
+        }
+
+.button_lacation {
+    position: fixed;
+
+    /* На ПК майже біля меню */
+    right: 20px;
+    bottom: 30px;
+
+    width: 62px;
+    height: 62px;
+
+    border-radius: 50%;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    /* Таке саме скло як у твоїх кнопках */
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.15),
+        inset 0 1px 1px rgba(255, 255, 255, 0.4);
+
+    cursor: pointer;
+    z-index: 1000;
+
+    transition: all .3s ease;
+}
+
+.button_lacation img{
+    width: 32px;
+    height: 32px;
+}
+
+.button_lacation:hover{
+    transform: scale(1.08);
+}
+
+.button_lacation:active{
+    transform: scale(.95);
+}
+
+/* Телефон */
+@media (max-width:768px){
+
+    .button_lacation{
+
+        width:54px;
+        height:54px;
+
+        right:18px;
+        bottom:110px;
+    }
+
+    .button_lacation img{
+        width:26px;
+        height:26px;
+    }
+
+}
