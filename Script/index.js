@@ -4,7 +4,7 @@ const buttonProfile = document.querySelector(".button_profile");
 
 // Кнопка додавання фото
 buttonCreate1.addEventListener("click", () => {
-    window.location.href = "createPhoto.html";
+    window.location.href = "CreatePhoto.html";
 });
 
 // Кнопка профілю
