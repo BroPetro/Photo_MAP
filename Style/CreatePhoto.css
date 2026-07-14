@@ -1,0 +1,268 @@
+        /* Нижнє меню */
+        html, body {
+            margin: 0;
+            height: 100%;
+        }
+
+        #map {
+            width: 100%;
+            height: 100vh;
+        }
+
+
+        .downbutton {
+            position: fixed;
+            bottom: 20px;
+            left: 50%;
+            transform: translateX(-50%);
+
+            width: 50%;
+            height: 70px;
+
+            border-radius: 35px;
+
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .downbutton {
+                left: 10px;
+                right: 10px;
+                width: auto;
+                transform: none;
+            }
+        }
+        .button_Back {
+            width: 31%;
+            height: 90%;
+
+             border-radius: 35px;
+
+             position: fixed;
+             bottom: 5%;
+             left: 1%;
+
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+
+            z-index: 1000;
+
+            transition: all 0.3s ease;
+        }
+
+        .button_search {
+            width: 31%;
+            height: 90%;
+
+            border-radius: 35px;
+
+            position: fixed;
+            bottom: 5%;
+            left: 50%;
+            transform: translateX(-50%);
+
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+
+            z-index: 1000;
+
+             transition: all 0.3s ease;
+        }   
+
+        .button_profile {
+            width: 31%;
+            height: 90%;
+
+            border-radius: 35px;
+
+            position: fixed;
+            bottom: 5%;
+            right: 1%;
+
+            background: rgba(255, 255, 255, 0.25);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+
+                box-shadow:
+                    0 8px 30px rgba(0, 0, 0, 0.15),
+                    inset 0 1px 1px rgba(255, 255, 255, 0.4);
+
+            z-index: 1000;
+
+            transition: all 0.3s ease;
+        }   
+
+        .button_Back:hover {
+            transform: scale(1.08);
+            border-radius: 45px;
+        }
+
+        .button_profile:hover {
+            transform: scale(1.08);
+            border-radius: 45px;
+        }
+        .button_search:hover {
+            transform: translateX(-50%) scale(1.08);
+            border-radius: 45px;
+        }
+
+        /* загрузка фото і інше */
+
+.menu_conteiner {
+    position: fixed;
+    bottom: 20%;
+    left: 50%;
+    transform: translateX(-50%);
+
+    width: 50%;
+    height: 75%;
+
+    display: flex;
+    flex-direction: column;   /* ← Головна зміна */
+    align-items: center;
+    justify-content: flex-start;
+
+    border-radius: 35px;
+
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255, 255, 255, 0.3);
+
+    box-shadow:
+        0 8px 30px rgba(0, 0, 0, 0.15),
+        inset 0 1px 1px rgba(255, 255, 255, 0.4);
+
+    z-index: 1000;
+}
+
+        @media (max-width: 768px) {
+            .menu_conteiner {
+                width: 93%;       /* Розтягує блок на всю ширину екрана */
+                border-radius: 35px;   /* Прибирає заокруглення кутів, оскільки блок торкається країв */
+            }
+        }
+
+        .upload_photo {
+            display: flex;
+            justify-content: center; /* Центрує по горизонталі */
+            align-items: center;
+            margin-top: 2%;
+            width: 93%;
+            height: 35%;
+
+            border-radius: 35px;
+
+            background: rgba(255, 255, 255, 0.25);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+
+            border: 1px solid rgba(255, 255, 255, 0.3);
+
+            box-shadow:
+                0 8px 30px rgba(0, 0, 0, 0.15),
+                inset 0 1px 1px rgba(255, 255, 255, 0.4);
+            
+        }
+
+
+/* Переконуємось, що батьківські блоки також центрують вміст */
+
+
+/* Стиль для самої фотографії, щоб вона коректно масштабувалась */
+            .upload-photo {
+                display: block;
+                max-width: 100%;        /* Щоб фото не вилазило за межі екрану */
+                height: auto;
+                cursor: pointer;
+            }
+            .button_accept {
+                width: 200px;
+                height: 30px;
+
+                border-radius: 35px;
+
+                position: fixed;
+                bottom: 5%;
+                left: 50%;
+                transform: translateX(-50%);
+
+                background: rgba(255, 255, 255, 0.25);
+                backdrop-filter: blur(20px);
+                -webkit-backdrop-filter: blur(20px);
+
+                border: 1px solid rgba(255, 255, 255, 0.3);
+
+                box-shadow:
+                    0 8px 30px rgba(0, 0, 0, 0.15),
+                    inset 0 1px 1px rgba(255, 255, 255, 0.4);
+
+                z-index: 1000;
+
+                transition: all 0.3s ease;
+            }
+            .button_accept:hover {
+                transform: translateX(-50%) scale(1.08);
+                border-radius: 45px;
+            }
+
+.location_container{
+    margin-top: 20px;
+    width: 93%;
+    height: 55%;
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+
+    border-radius: 35px;
+
+    background: rgba(255,255,255,.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+
+    border: 1px solid rgba(255,255,255,.3);
+
+    box-shadow:
+        0 8px 30px rgba(0,0,0,.15),
+        inset 0 1px 1px rgba(255,255,255,.4);
+}
+            .location_container h3{
+                text-align:center;
+                margin-bottom:15px;
+                color:black;
+            }
+
+            #photoMap{
+                width:100%;
+                height:350px;
+                border-radius:18px;
+                overflow:hidden;
+            }
