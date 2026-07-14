@@ -1,268 +1,270 @@
-        /* Нижнє меню */
-        html, body {
-            margin: 0;
-            height: 100%;
-        }
+/* Базові налаштування */
+html, body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    overflow: hidden;
+}
 
-        #map {
-            width: 100%;
-            height: 100vh;
-        }
+#map {
+    width: 100%;
+    height: 100vh;
+    position: absolute;
+    top: 0;
+    left: 0;
+    z-index: 1;
+}
 
-
-        .downbutton {
-            position: fixed;
-            bottom: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-
-            width: 50%;
-            height: 70px;
-
-            border-radius: 35px;
-
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-
-            border: 1px solid rgba(255, 255, 255, 0.3);
-
-            box-shadow:
-                0 8px 30px rgba(0, 0, 0, 0.15),
-                inset 0 1px 1px rgba(255, 255, 255, 0.4);
-
-            z-index: 1000;
-        }
-
-        @media (max-width: 768px) {
-            .downbutton {
-                left: 10px;
-                right: 10px;
-                width: auto;
-                transform: none;
-            }
-        }
-        .button_Back {
-            width: 31%;
-            height: 90%;
-
-             border-radius: 35px;
-
-             position: fixed;
-             bottom: 5%;
-             left: 1%;
-
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-
-            border: 1px solid rgba(255, 255, 255, 0.3);
-
-            box-shadow:
-                0 8px 30px rgba(0, 0, 0, 0.15),
-                inset 0 1px 1px rgba(255, 255, 255, 0.4);
-
-            z-index: 1000;
-
-            transition: all 0.3s ease;
-        }
-
-        .button_search {
-            width: 31%;
-            height: 90%;
-
-            border-radius: 35px;
-
-            position: fixed;
-            bottom: 5%;
-            left: 50%;
-            transform: translateX(-50%);
-
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-
-            border: 1px solid rgba(255, 255, 255, 0.3);
-
-            box-shadow:
-                0 8px 30px rgba(0, 0, 0, 0.15),
-                inset 0 1px 1px rgba(255, 255, 255, 0.4);
-
-            z-index: 1000;
-
-             transition: all 0.3s ease;
-        }   
-
-        .button_profile {
-            width: 31%;
-            height: 90%;
-
-            border-radius: 35px;
-
-            position: fixed;
-            bottom: 5%;
-            right: 1%;
-
-            background: rgba(255, 255, 255, 0.25);
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
-
-            border: 1px solid rgba(255, 255, 255, 0.3);
-
-                box-shadow:
-                    0 8px 30px rgba(0, 0, 0, 0.15),
-                    inset 0 1px 1px rgba(255, 255, 255, 0.4);
-
-            z-index: 1000;
-
-            transition: all 0.3s ease;
-        }   
-
-        .button_Back:hover {
-            transform: scale(1.08);
-            border-radius: 45px;
-        }
-
-        .button_profile:hover {
-            transform: scale(1.08);
-            border-radius: 45px;
-        }
-        .button_search:hover {
-            transform: translateX(-50%) scale(1.08);
-            border-radius: 45px;
-        }
-
-        /* загрузка фото і інше */
-
-.menu_conteiner {
+/* Нижня панель навігації */
+.downbutton {
     position: fixed;
-    bottom: 20%;
+    bottom: 20px;
     left: 50%;
     transform: translateX(-50%);
-
     width: 50%;
-    height: 75%;
-
-    display: flex;
-    flex-direction: column;   /* ← Головна зміна */
-    align-items: center;
-    justify-content: flex-start;
-
+    height: 70px;
     border-radius: 35px;
-
     background: rgba(255, 255, 255, 0.25);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-
     border: 1px solid rgba(255, 255, 255, 0.3);
-
-    box-shadow:
-        0 8px 30px rgba(0, 0, 0, 0.15),
-        inset 0 1px 1px rgba(255, 255, 255, 0.4);
-
-    z-index: 1000;
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    z-index: 1001;
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
 }
 
-        @media (max-width: 768px) {
-            .menu_conteiner {
-                width: 93%;       /* Розтягує блок на всю ширину екрана */
-                border-radius: 35px;   /* Прибирає заокруглення кутів, оскільки блок торкається країв */
-            }
-        }
+/* Кнопки навігації */
+.button_Back, .button_search, .button_profile {
+    width: 30%;
+    height: 80%;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
 
-        .upload_photo {
-            display: flex;
-            justify-content: center; /* Центрує по горизонталі */
-            align-items: center;
-            margin-top: 2%;
-            width: 93%;
-            height: 35%;
+.button_Back img, .button_search img, .button_profile img {
+    height: 24px;
+    width: auto;
+}
 
-            border-radius: 35px;
+.button_Back:hover, .button_profile:hover, .button_search:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.4);
+}
 
-            background: rgba(255, 255, 255, 0.25);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
+/* Меню завантаження з прокруткою */
+.menu_conteiner {
+    position: fixed;
+    top: 5%;
+    bottom: 110px; /* Залишає місце для нижньої панелі */
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    max-width: 600px;
+    border-radius: 35px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.5);
+    z-index: 1000;
+    overflow-y: auto; /* Дозволяє скролити вміст на смартфонах */
+    padding: 20px;
+    box-sizing: border-box;
+}
 
-            border: 1px solid rgba(255, 255, 255, 0.3);
+/* Тонкий красивий скроллбар для контейнера */
+.menu_conteiner::-webkit-scrollbar {
+    width: 6px;
+}
+.menu_conteiner::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.4);
+    border-radius: 10px;
+}
 
-            box-shadow:
-                0 8px 30px rgba(0, 0, 0, 0.15),
-                inset 0 1px 1px rgba(255, 255, 255, 0.4);
-            
-        }
-
-
-/* Переконуємось, що батьківські блоки також центрують вміст */
-
-
-/* Стиль для самої фотографії, щоб вона коректно масштабувалась */
-            .upload-photo {
-                display: block;
-                max-width: 100%;        /* Щоб фото не вилазило за межі екрану */
-                height: auto;
-                cursor: pointer;
-            }
-            .button_accept {
-                width: 200px;
-                height: 30px;
-
-                border-radius: 35px;
-
-                position: fixed;
-                bottom: 5%;
-                left: 50%;
-                transform: translateX(-50%);
-
-                background: rgba(255, 255, 255, 0.25);
-                backdrop-filter: blur(20px);
-                -webkit-backdrop-filter: blur(20px);
-
-                border: 1px solid rgba(255, 255, 255, 0.3);
-
-                box-shadow:
-                    0 8px 30px rgba(0, 0, 0, 0.15),
-                    inset 0 1px 1px rgba(255, 255, 255, 0.4);
-
-                z-index: 1000;
-
-                transition: all 0.3s ease;
-            }
-            .button_accept:hover {
-                transform: translateX(-50%) scale(1.08);
-                border-radius: 45px;
-            }
-
-.location_container{
-    margin-top: 20px;
-    width: 93%;
-    height: 55%;
-
+.upload_form_container {
     display: flex;
     flex-direction: column;
     align-items: center;
-
-    border-radius: 35px;
-
-    background: rgba(255,255,255,.25);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-
-    border: 1px solid rgba(255,255,255,.3);
-
-    box-shadow:
-        0 8px 30px rgba(0,0,0,.15),
-        inset 0 1px 1px rgba(255,255,255,.4);
+    gap: 15px;
+    width: 100%;
 }
-            .location_container h3{
-                text-align:center;
-                margin-bottom:15px;
-                color:black;
-            }
 
-            #photoMap{
-                width:100%;
-                height:350px;
-                border-radius:18px;
-                overflow:hidden;
-            }
+/* Контейнер завантаження фото */
+.upload_photo {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    min-height: 150px;
+    max-height: 220px;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.05);
+    overflow: hidden;
+    padding: 10px;
+    box-sizing: border-box;
+}
+
+.upload-btn {
+    cursor: pointer;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    height: 100%;
+}
+
+.upload-photo {
+    max-width: 100%;
+    max-height: 180px;
+    object-fit: contain;
+    border-radius: 15px;
+    transition: transform 0.2s ease;
+}
+
+.upload-photo:hover {
+    transform: scale(1.02);
+}
+
+/* Додаткові поля вводу (Опис, Камера, Об'єктив) */
+.details_container {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    width: 100%;
+}
+
+.input_detail, .textarea_detail {
+    width: 100%;
+    padding: 12px 15px;
+    border-radius: 18px;
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    background: rgba(255, 255, 255, 0.15);
+    color: #000;
+    font-size: 14px;
+    font-family: inherit;
+    outline: none;
+    box-sizing: border-box;
+    transition: all 0.3s ease;
+}
+
+.input_detail::placeholder, .textarea_detail::placeholder {
+    color: #444;
+}
+
+.input_detail:focus, .textarea_detail:focus {
+    background: rgba(255, 255, 255, 0.4);
+    border-color: rgba(255, 255, 255, 0.8);
+    box-shadow: 0 0 10px rgba(255, 255, 255, 0.15);
+}
+
+.textarea_detail {
+    height: 80px;
+    resize: none;
+}
+
+/* Контейнер карти */
+.location_container {
+    width: 100%;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.2);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    padding: 15px;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.location_container h3 {
+    margin: 0;
+    text-align: center;
+    font-size: 16px;
+    color: #111;
+    font-weight: 600;
+}
+
+#photoMap {
+    width: 100%;
+    height: 200px; /* Адаптивна висота для мобільних карт */
+    border-radius: 18px;
+    overflow: hidden;
+    z-index: 5;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+/* Кнопка "Завантажити" у формі */
+.button_accept {
+    width: 100%;
+    max-width: 250px;
+    height: 45px;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.4);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    color: #111;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 5px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button_accept:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.6);
+}
+
+/* МЕДІА-ЗАПИТИ ДЛЯ ТЕЛЕФОНІВ (екран < 768px) */
+@media (max-width: 768px) {
+    .downbutton {
+        left: 15px;
+        right: 15px;
+        width: auto;
+        transform: none;
+        bottom: 15px;
+        height: 60px;
+    }
+
+    .menu_conteiner {
+        width: 92%;
+        top: 2%;
+        bottom: 90px;
+        border-radius: 25px;
+        padding: 15px;
+    }
+
+    .button_Back, .button_search, .button_profile {
+        border-radius: 20px;
+    }
+
+    #photoMap {
+        height: 180px; /* Менша висота карти на малих екранах */
+    }
+    
+    .button_accept {
+        height: 40px;
+        font-size: 15px;
+    }
+}
