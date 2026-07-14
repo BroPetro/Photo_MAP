@@ -1,9 +1,9 @@
 <!DOCTYPE html>
-<html>
+<html lang="uk">
 <head>
 	<meta charset="utf-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1">
-	<title>PhotoMAP|New photo</title>
+	<title>PhotoMAP | New photo</title>
 	<link rel="icon" href="icons/icon-500x500-remove-bg.png">
 	<link rel="stylesheet" href="Style/CreatePhoto.css">
 	<link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
@@ -11,20 +11,24 @@
 <body>
 	<div id="map"></div>
 	<div class="downbutton">
-  		<button class="button_Back"><img src="icons/back.png"></button>
-  		<button class="button_search"><img src="icons/Search.png"></button>
-  		<button class="button_profile"><img src="icons/Accaunt.png"></button>
+  		<button class="button_Back"><img src="icons/back.png" alt="Назад"></button>
+  		<button class="button_search"><img src="icons/Search.png" alt="Пошук"></button>
+  		<button class="button_profile"><img src="icons/Accaunt.png" alt="Профіль"></button>
 	</div>
 <div class="menu_conteiner">
 	<div class="upload_photo">
-		<form action="/upload" method="POST" enctype="multipart/form-data" class="upload_form_container">
-			<!-- Сама фотографія (label діє як кнопка вибору файлу) -->
+		<form class="upload_form_container" id="uploadForm">
 			<label for="photo-upload" class="upload-btn">
-				<img src="icons/AddPhoto3.png" class="upload-photo" alt="Завантажити фото">
+				<img src="icons/AddPhoto3.png" class="upload-photo" id="preview-image" alt="Завантажити фото">
 			</label>
 			<input type="file" id="photo-upload" name="photo" accept="image/*" hidden>
 
-			<!-- Кнопка відправки, яка буде чітко під фото -->
+			<div class="details_container">
+				<input type="text" id="lens" placeholder="Який об'єктив використовувався?" class="input_detail">
+				<input type="text" id="camera" placeholder="Модель камери / телефону" class="input_detail">
+				<textarea id="description" placeholder="Додатковий опис..." class="textarea_detail"></textarea>
+			</div>
+
 			<button type="submit" class="button_accept">Завантажити</button>
 		</form>
 	</div>
@@ -38,8 +42,7 @@
 	</div>
 </div>
 
-	<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-	<script src="Script/Map_login.js"></script>
-	<script src="Script/CreatePhoto.js"></script>
+<script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+<script type="module" src="Script/CreatePhoto.js"></script>
 </body>
 </html>
