@@ -8,65 +8,17 @@ html, body {
     overflow: hidden;
 }
 
+/* Велика фонова карта на задньому фоні */
 #map {
     width: 100%;
     height: 100vh;
     position: absolute;
     top: 0;
     left: 0;
-    z-index: 1;
+    z-index: 1; /* Найнижчий шар */
 }
 
-/* Нижня панель навігації */
-.downbutton {
-    position: fixed;
-    bottom: 20px;
-    left: 50%;
-    transform: translateX(-50%);
-    width: 50%;
-    height: 70px;
-    border-radius: 35px;
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.4);
-    z-index: 1001;
-    display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding: 0 10px;
-    box-sizing: border-box;
-}
-
-/* Кнопки навігації */
-.button_Back, .button_search, .button_profile {
-    width: 30%;
-    height: 80%;
-    border-radius: 25px;
-    background: rgba(255, 255, 255, 0.25);
-    backdrop-filter: blur(20px);
-    -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(255, 255, 255, 0.3);
-    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.4);
-    cursor: pointer;
-    transition: all 0.3s ease;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-}
-
-.button_Back img, .button_search img, .button_profile img {
-    height: 24px;
-    width: auto;
-}
-
-.button_Back:hover, .button_profile:hover, .button_search:hover {
-    transform: scale(1.05);
-    background: rgba(255, 255, 255, 0.4);
-}
-
-/* Меню завантаження з прокруткою */
+/* Меню завантаження поверх фонової карти */
 .menu_conteiner {
     position: fixed;
     top: 5%;
@@ -81,13 +33,13 @@ html, body {
     -webkit-backdrop-filter: blur(25px);
     border: 1px solid rgba(255, 255, 255, 0.3);
     box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2), inset 0 1px 1px rgba(255, 255, 255, 0.5);
-    z-index: 1000;
-    overflow-y: auto; /* Дозволяє скролити вміст на смартфонах */
+    z-index: 1000; /* Шар поверх карти */
+    overflow-y: auto; /* Можливість скролити вміст */
     padding: 20px;
     box-sizing: border-box;
 }
 
-/* Тонкий красивий скроллбар для контейнера */
+/* Гарний тонкий скроллбар */
 .menu_conteiner::-webkit-scrollbar {
     width: 6px;
 }
@@ -142,7 +94,7 @@ html, body {
     transform: scale(1.02);
 }
 
-/* Додаткові поля вводу (Опис, Камера, Об'єктив) */
+/* Поля вводу (Glassmorphism) */
 .details_container {
     display: flex;
     flex-direction: column;
@@ -179,7 +131,7 @@ html, body {
     resize: none;
 }
 
-/* Контейнер карти */
+/* Маленька карта у формі */
 .location_container {
     width: 100%;
     border-radius: 25px;
@@ -202,14 +154,14 @@ html, body {
 
 #photoMap {
     width: 100%;
-    height: 200px; /* Адаптивна висота для мобільних карт */
+    height: 200px;
     border-radius: 18px;
     overflow: hidden;
     z-index: 5;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-/* Кнопка "Завантажити" у формі */
+/* Кнопка "Завантажити" */
 .button_accept {
     width: 100%;
     max-width: 250px;
@@ -236,7 +188,56 @@ html, body {
     background: rgba(255, 255, 255, 0.6);
 }
 
-/* МЕДІА-ЗАПИТИ ДЛЯ ТЕЛЕФОНІВ (екран < 768px) */
+/* Нижня панель навігації */
+.downbutton {
+    position: fixed;
+    bottom: 20px;
+    left: 50%;
+    transform: translateX(-50%);
+    width: 50%;
+    height: 70px;
+    border-radius: 35px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.15), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    z-index: 1001; /* Поверх усього */
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 0 10px;
+    box-sizing: border-box;
+}
+
+/* Кнопки в панелі навігації */
+.button_Back, .button_search, .button_profile {
+    width: 30%;
+    height: 80%;
+    border-radius: 25px;
+    background: rgba(255, 255, 255, 0.25);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1), inset 0 1px 1px rgba(255, 255, 255, 0.4);
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.button_Back img, .button_search img, .button_profile img {
+    height: 24px;
+    width: auto;
+}
+
+.button_Back:hover, .button_profile:hover, .button_search:hover {
+    transform: scale(1.05);
+    background: rgba(255, 255, 255, 0.4);
+}
+
+/* Адаптація для телефонів (екран < 768px) */
 @media (max-width: 768px) {
     .downbutton {
         left: 15px;
@@ -260,7 +261,7 @@ html, body {
     }
 
     #photoMap {
-        height: 180px; /* Менша висота карти на малих екранах */
+        height: 180px;
     }
     
     .button_accept {
