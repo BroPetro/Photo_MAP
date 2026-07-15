@@ -21,16 +21,16 @@
 
 <div id="map"></div>
 <div class="downbutton">
-  <button class="button_search"><img src="icons/Search.png"></button>
-  <button class="button_create"><img src="icons/AddPhoto2.png"></button>
-  <button class="button_profile"><img src="icons/Accaunt.png"></button>
+  <button class="button_search"><img src="icons/Search.png" alt="Пошук"></button>
+  <button class="button_create"><img src="icons/AddPhoto2.png" alt="Створити"></button>
+  <button class="button_profile"><img src="icons/Accaunt.png" alt="Профіль"></button>
 </div>
 
-<button class="button_lacation"><img src="icons/MyLocation2.png"></button>
+<button class="button_lacation"><img src="icons/MyLocation2.png" alt="Моя локація"></button>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="Script/Map.js"></script>
-<script src="Script/index.js"></script>
+<script type="module" src="Script/Map.js"></script>
+<script type="module" src="Script/index.js"></script>
 <script>
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
