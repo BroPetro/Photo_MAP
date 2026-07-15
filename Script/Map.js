@@ -1,4 +1,3 @@
-// Імпортуємо необхідне з твого firebase.js
 import { database } from "./firebase.js";
 import { ref, onValue } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
@@ -9,91 +8,127 @@ const myIcon = L.icon({
     iconAnchor: [20, 40]             
 });
 
-// Підгружаємо кнопку геолокації
 const buttonLocation = document.querySelector(".button_lacation");
 
-// Підгружаємо головну фонову карту
-const map = L.map('map').setView([20, 0], 2);
+// Елементи інтерфейсу деталей фотографії
+const sidebar = document.getElementById("details-sidebar");
+const sidebarClose = document.querySelector(".sidebar-close-btn");
+const sidebarDragHandle = document.querySelector(".sidebar-drag-handle");
+const sidebarImg = document.getElementById("sidebar-img");
+const sidebarDesc = document.getElementById("sidebar-description");
+const sidebarCamera = document.getElementById("sidebar-camera");
+const sidebarLens = document.getElementById("sidebar-lens");
+const sidebarDate = document.getElementById("sidebar-date");
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-    attribution: '&copy; OpenStreetMap'
-}).addTo(map);
+// Елементи повноекранного режиму
+const fullscreenOverlay = document.getElementById("fullscreen-overlay");
+const fullscreenImg = document.getElementById("fullscreen-img");
+const fullscreenClose = document.querySelector(".fullscreen-close");
 
-// Отримання поточної локації користувача
+// Ініціалізація карти
+const map = L.map('map', {
+    zoomControl: false // Прибираємо зайві кнопки контролю
+}).setView([20, 0], 2);
+
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// Отримання поточної геолокації
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
         const lat = position.coords.latitude;
         const lng = position.coords.longitude;
-
-        map.setView([lat, lng], 16);
-        L.marker([lat, lng], {
-            icon: myIcon
-        }).addTo(map);
+        map.setView([lat, lng], 14);
+        L.marker([lat, lng], { icon: myIcon }).addTo(map);
     }, function(error) {
-        console.log("Не вдалося отримати локацію користувача:", error.message);
+        console.log("Геолокацію не визначено:", error.message);
     });
 }
 
-// Кнопка центрування на собі
 buttonLocation.addEventListener("click", function () {
     if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition(function(position) {
             const lat = position.coords.latitude;
             const lng = position.coords.longitude;
-            map.setView([lat, lng], 16);
+            map.setView([lat, lng], 14);
         });
     }
 });
 
-// --- ЗАВАНТАЖЕННЯ ТА ВІДОБРАЖЕННЯ ФОТОГРАФІЙ З FIREBASE ---
-
+// --- ЗЧИТУВАННЯ ФОТОГРАФІЙ З БАЗИ ---
 const photosRef = ref(database, 'photos');
 
 onValue(photosRef, (snapshot) => {
     const data = snapshot.val();
     if (!data) return;
 
-    // Очищуємо старі маркери фотографій, якщо вони були (за бажанням), або просто наносимо нові
     Object.keys(data).forEach((key) => {
         const photo = data[key];
 
         if (photo.latitude && photo.longitude && photo.imageText) {
             
-            // Створюємо кастомну круглу іконку-прев'ю із завантаженого зображення
+            // Кастомна кругла іконка з прев'ю фото
             const photoIcon = L.divIcon({
                 className: 'custom-photo-marker',
                 html: `<div class="marker-photo-wrapper" style="background-image: url(${photo.imageText});"></div>`,
-                iconSize: [45, 45],
-                iconAnchor: [22, 22]
+                iconSize: [46, 46],
+                iconAnchor: [23, 23]
             });
 
-            // Форматуємо дату публікації
-            const publishDate = photo.timestamp ? new Date(photo.timestamp).toLocaleDateString("uk-UA") : "Невідомо";
+            // Створюємо маркер
+            const marker = L.marker([photo.latitude, photo.longitude], { icon: photoIcon }).addTo(map);
 
-            // Вміст спливаючого вікна (Popup) при кліці
-            const popupContent = `
-                <div class="photo-popup-container">
-                    <div class="photo-popup-image-holder">
-                        <img src="${photo.imageText}" alt="Фото на карті" class="photo-popup-img">
-                    </div>
-                    <div class="photo-popup-info">
-                        <p class="popup-description">${photo.description || "<i>Опис відсутній</i>"}</p>
-                        <div class="popup-metadata">
-                            <span><b>Камера:</b> ${photo.camera || "Не вказано"}</span>
-                            <span><b>Об'єктив:</b> ${photo.lens || "Не вказано"}</span>
-                            <span class="popup-date"><b>Дата:</b> ${publishDate}</span>
-                        </div>
-                    </div>
-                </div>
-            `;
+            // КЛІК НА МАРКЕР — Відкриття деталей у шторці
+            marker.on('click', () => {
+                // Заповнюємо даними
+                sidebarImg.src = photo.imageText;
+                sidebarDesc.innerHTML = photo.description ? photo.description.replace(/\n/g, '<br>') : '<i>Без опису</i>';
+                sidebarCamera.textContent = photo.camera || "Не вказано";
+                sidebarLens.textContent = photo.lens || "Не вказано";
+                
+                const publishDate = photo.timestamp ? new Date(photo.timestamp).toLocaleDateString("uk-UA") : "Невідомо";
+                sidebarDate.textContent = publishDate;
 
-            // Створюємо маркер і додаємо його на карту
-            L.marker([photo.latitude, photo.longitude], { icon: photoIcon })
-                .addTo(map)
-                .bindPopup(popupContent, {
-                    maxWidth: 290,
-                    className: 'custom-leaflet-popup'
-                });
+                // Плавно центруємо карту трохи вище від маркера (особливо зручно на телефонах)
+                const targetPoint = map.project([photo.latitude, photo.longitude], map.getZoom());
+                if (window.innerWidth < 768) {
+                    targetPoint.y += 120; // посунемо вниз, щоб маркер не ховався під шторку
+                } else {
+                    targetPoint.x -= 100; // на ПК посунемо вправо від панелі
+                }
+                map.panTo(map.unproject(targetPoint, map.getZoom()), { animate: true, duration: 0.6 });
+
+                // Відкриваємо шторку деталей
+                sidebar.classList.add("active");
+            });
         }
     });
+});
+
+// Закриття панелі деталей
+const closeSidebar = () => {
+    sidebar.classList.remove("active");
+};
+sidebarClose.addEventListener("click", closeSidebar);
+sidebarDragHandle.addEventListener("click", closeSidebar);
+
+// Клік на мапу закриває панель деталей
+map.on("click", closeSidebar);
+
+// --- ПОВНОЕКРАННИЙ ПЕРЕГЛЯД ЗОБРАЖЕННЯ ---
+sidebarImg.addEventListener("click", () => {
+    if (sidebarImg.src) {
+        fullscreenImg.src = sidebarImg.src;
+        fullscreenOverlay.classList.add("active");
+    }
+});
+
+const closeFullscreen = () => {
+    fullscreenOverlay.classList.remove("active");
+};
+
+fullscreenClose.addEventListener("click", closeFullscreen);
+fullscreenOverlay.addEventListener("click", (e) => {
+    if (e.target !== fullscreenImg) {
+        closeFullscreen();
+    }
 });

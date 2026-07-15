@@ -196,114 +196,294 @@
 
 }
 
-/* СТИЛІ ДЛЯ МАРКЕРІВ-ФОТО ТА КЛІКАБЕЛЬНИХ ВІКОН ПЕРЕГЛЯДУ */
+/* Базові налаштування карт */
+html, body {
+    margin: 0;
+    height: 100%;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+    overflow: hidden;
+}
 
-/* Круглий маркер-прев'ю на карті */
+#map {
+    width: 100%;
+    height: 100vh;
+}
+
+/* --- СТИЛІ КАСТОМНИХ МАРКЕРІВ --- */
 .custom-photo-marker {
     background: none !important;
     border: none !important;
 }
 
 .marker-photo-wrapper {
-    width: 42px;
-    height: 42px;
+    width: 44px;
+    height: 44px;
     border-radius: 50%;
     border: 3px solid #ffffff;
     box-shadow: 0 4px 15px rgba(0, 0, 0, 0.35);
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
-    transition: transform 0.2s ease-in-out;
+    transition: transform 0.25s cubic-bezier(0.175, 0.885, 0.32, 1.275);
 }
 
 .marker-photo-wrapper:hover {
-    transform: scale(1.15);
-    z-index: 9999;
-    border-color: #ffd700; /* Золота рамка при наведенні */
+    transform: scale(1.2) translateY(-3px);
+    border-color: #ffd700;
 }
 
-/* Кастомний контейнер всередині попапу Leaflet */
-.photo-popup-container {
+
+/* --- БІЧНА ПАНЕЛЬ / МОБІЛЬНА ШТОРКА ДЕТАЛЕЙ --- */
+.details-sidebar {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    bottom: 110px; /* Залишає простір до нижнього меню */
+    width: 380px;
+    max-width: 90%;
+    background: rgba(255, 255, 255, 0.85);
+    backdrop-filter: blur(25px);
+    -webkit-backdrop-filter: blur(25px);
+    border: 1px solid rgba(255, 255, 255, 0.4);
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+    border-radius: 30px;
+    z-index: 1010;
     display: flex;
     flex-direction: column;
-    width: 100%;
-    max-width: 260px;
-    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
-    color: #111;
+    overflow: hidden;
+    transform: translateX(-120%); /* Схована ліворуч на ПК за замовчуванням */
+    transition: transform 0.4s cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 
-/* Сховище для зображення в попапі */
-.photo-popup-image-holder {
+.details-sidebar.active {
+    transform: translateX(0); /* Виїжджає на екран */
+}
+
+/* Кнопка закриття */
+.sidebar-close-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: none;
+    background: rgba(0, 0, 0, 0.08);
+    font-size: 22px;
+    line-height: 34px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #333;
+    z-index: 10;
+    transition: background 0.2s ease;
+}
+
+.sidebar-close-btn:hover {
+    background: rgba(0, 0, 0, 0.15);
+}
+
+/* Смужка-тримач для мобільних пристроїв */
+.sidebar-drag-handle {
+    display: none; /* Схована на ПК */
+    width: 50px;
+    height: 5px;
+    background: rgba(0, 0, 0, 0.15);
+    border-radius: 3px;
+    margin: 12px auto 5px auto;
+    cursor: pointer;
+}
+
+/* Вміст шторки */
+.sidebar-content {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    overflow-y: auto;
+}
+
+/* Контейнер картинки */
+.sidebar-image-container {
+    position: relative;
     width: 100%;
-    max-height: 180px;
+    height: 250px;
+    background: #000;
     overflow: hidden;
+    cursor: pointer;
+}
+
+#sidebar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.3s ease;
+}
+
+.sidebar-image-container:hover #sidebar-img {
+    transform: scale(1.04);
+}
+
+/* Підказка масштабування */
+.zoom-hint {
+    position: absolute;
+    bottom: 12px;
+    right: 12px;
+    background: rgba(0, 0, 0, 0.5);
+    color: #fff;
+    padding: 4px 10px;
+    font-size: 11px;
     border-radius: 12px;
-    margin-bottom: 10px;
+    pointer-events: none;
+    backdrop-filter: blur(5px);
+}
+
+/* Інформація про фотографію */
+.sidebar-info-container {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+}
+
+.sidebar-desc {
+    font-size: 16px;
+    line-height: 1.5;
+    color: #222;
+    margin: 0;
+    word-break: break-word;
+    font-weight: 400;
+}
+
+/* Технічні характеристики */
+.sidebar-specs {
+    border-top: 1px solid rgba(0, 0, 0, 0.08);
+    padding-top: 15px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.spec-item {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+}
+
+.spec-label {
+    color: #666;
+    font-weight: 500;
+}
+
+.spec-value {
+    color: #111;
+    font-weight: 600;
+    text-align: right;
+    max-width: 60%;
+    word-wrap: break-word;
+}
+
+
+/* --- ПОВНОЕКРАННЕ ЗОБРАЖЕННЯ (OVERLAY) --- */
+.fullscreen-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    background: rgba(0, 0, 0, 0.95);
+    z-index: 2000; /* Перекриває все */
     display: flex;
     justify-content: center;
     align-items: center;
-    background: #f0f0f0;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s ease-in-out;
 }
 
-.photo-popup-img {
-    width: 100%;
-    height: auto;
-    max-height: 180px;
-    object-fit: cover;
-    border-radius: 12px;
+.fullscreen-overlay.active {
+    opacity: 1;
+    pointer-events: auto;
 }
 
-/* Опис та деталі */
-.photo-popup-info {
-    display: flex;
-    flex-direction: column;
-    gap: 6px;
+#fullscreen-img {
+    max-width: 95%;
+    max-height: 85%;
+    object-fit: contain;
+    border-radius: 8px;
+    box-shadow: 0 10px 40px rgba(0,0,0,0.5);
+    transform: scale(0.9);
+    transition: transform 0.3s cubic-bezier(0.1, 0.9, 0.2, 1);
 }
 
-.popup-description {
-    font-size: 14px;
-    line-height: 1.4;
-    margin: 0;
-    font-weight: 500;
-    color: #222;
-    word-break: break-word;
+.fullscreen-overlay.active #fullscreen-img {
+    transform: scale(1);
 }
 
-.popup-metadata {
-    display: flex;
-    flex-direction: column;
-    gap: 3px;
-    font-size: 11px;
-    color: #555;
-    border-top: 1px solid rgba(0,0,0,0.1);
-    padding-top: 6px;
+.fullscreen-close {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    font-size: 42px;
+    color: #ffffff;
+    background: none;
+    border: none;
+    cursor: pointer;
+    transition: transform 0.2s ease;
 }
 
-.popup-metadata span {
-    display: block;
+.fullscreen-close:hover {
+    transform: scale(1.1);
 }
 
-.popup-date {
-    margin-top: 2px;
-    color: #777;
-}
 
-/* Кастомізація стандартної плашки Popup від Leaflet */
-.custom-leaflet-popup .leaflet-popup-content-wrapper {
-    background: rgba(255, 255, 255, 0.9) !important;
-    backdrop-filter: blur(10px);
-    -webkit-backdrop-filter: blur(10px);
-    border-radius: 20px !important;
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    box-shadow: 0 8px 30px rgba(0,0,0,0.15) !important;
-    padding: 5px;
-}
+/* --- АДАПТИВНІСТЬ ПІД ТЕЛЕФОНИ (Екрани < 768px) --- */
+@media (max-width: 768px) {
+    /* Робимо шторку мобільною (виїжджає знизу) */
+    .details-sidebar {
+        left: 0;
+        right: 0;
+        bottom: 0;
+        top: auto; /* Забираємо прив'язку до верху */
+        width: 100%;
+        max-width: 100%;
+        height: 65vh; /* Займає 65% екрану для комфортного перегляду */
+        border-radius: 30px 30px 0 0; /* Округлені тільки верхні кути */
+        border-left: none;
+        border-right: none;
+        border-bottom: none;
+        transform: translateY(120%); /* Захована внизу */
+    }
 
-.custom-leaflet-popup .leaflet-popup-content {
-    margin: 8px 12px !important;
-    width: auto !important;
-}
+    .details-sidebar.active {
+        transform: translateY(0); /* Виїжджає знизу */
+    }
 
-.custom-leaflet-popup .leaflet-popup-tip {
-    background: rgba(255, 255, 255, 0.9) !important;
+    /* Показуємо тримач для закриття */
+    .sidebar-drag-handle {
+        display: block;
+    }
+
+    .sidebar-close-btn {
+        top: 10px;
+        right: 15px;
+    }
+
+    .sidebar-image-container {
+        height: 200px; /* Трішки менше зображення для економії місця на телефонах */
+    }
+
+    .sidebar-info-container {
+        padding: 16px 20px 85px 20px; /* Робимо великий нижній відступ для зручності скролу */
+    }
+
+    .sidebar-desc {
+        font-size: 15px; /* Більший та зручніший шрифт на смартфонах */
+    }
+
+    .spec-item {
+        font-size: 13px;
+        padding: 4px 0;
+    }
 }
