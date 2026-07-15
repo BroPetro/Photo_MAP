@@ -1,19 +1,31 @@
 import { auth, database } from "./firebase.js"; 
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
-import { ref, push, set } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+import { ref, push, set, get } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
 
 let currentUser = null;
+let currentUsername = "Анонім";
 
-// ПЕРЕВІРКА АВТОРИЗАЦІЇ
+// 1. ПЕРЕВІРКА АВТОРИЗАЦІЇ ТА ОТРИМАННЯ ІМЕНІ АВТОРА
 onAuthStateChanged(auth, (user) => {
     if (!user) {
+        // Якщо користувач не увійшов, відправляємо на реєстрацію
         window.location.href = "register.html";
     } else {
         currentUser = user;
-        console.log("Авторизовано користувача з ID:", user.uid);
+        
+        // Отримуємо ім'я користувача (username) з бази даних
+        const userRef = ref(database, `users/${user.uid}`);
+        get(userRef).then((snapshot) => {
+            if (snapshot.exists()) {
+                currentUsername = snapshot.val().username || "Користувач";
+            }
+        }).catch((error) => {
+            console.error("Помилка отримання профілю користувача:", error);
+        });
     }
 });
 
+// Кнопки навігації
 const button_Back = document.querySelector(".button_Back");
 const buttonProfile = document.querySelector(".button_profile");
 const photoUploadInput = document.getElementById("photo-upload");
@@ -28,21 +40,16 @@ buttonProfile.addEventListener("click", () => {
     window.location.href = "profile.html";
 });
 
-// Створюємо карту Leaflet всередині меню
-const photoMap = L.map('photoMap').setView([49.8397, 24.0297], 13);
+// 2. СТВОРЕННЯ КАРТИ ДЛЯ ВИБОРУ ЛОКАЦІЇ
+const photoMap = L.map('photoMap').setView([49.8397, 24.0297], 13); 
 
 L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
     attribution: '&copy; OpenStreetMap'
 }).addTo(photoMap);
 
-// Коригуємо розміри карти Leaflet (важливо для рендерингу в контейнерах)
-setTimeout(() => {
-    photoMap.invalidateSize();
-}, 200);
-
 let marker;
 
-// Отримання геолокації користувача
+// Визначення поточної геолокації користувача при відкритті
 if (navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(function(position) {
         const lat = position.coords.latitude;
@@ -58,7 +65,7 @@ if (navigator.geolocation) {
     });
 }
 
-// Вибір місця натисканням на карту
+// Вибір місця на карті вручну (кліком)
 photoMap.on("click", function(e) {
     if (marker) {
         photoMap.removeLayer(marker);
@@ -68,9 +75,9 @@ photoMap.on("click", function(e) {
     document.getElementById("longitude").value = e.latlng.lng;
 });
 
+// 3. ОБРОБКА ТА СТИСНЕННЯ ЗОБРАЖЕННЯ
 let compressedBase64 = "";
 
-// Обробка вибору фото та стиснення до 200-300 КБ
 photoUploadInput.addEventListener("change", function(event) {
     const file = event.target.files[0];
     if (!file) return;
@@ -79,8 +86,9 @@ photoUploadInput.addEventListener("change", function(event) {
     reader.onload = function(e) {
         const img = new Image();
         img.onload = function() {
-            previewImage.src = e.target.result;
-            // Розраховуємо стиснення
+            // Відображаємо прев'ю на екрані
+            if (previewImage) previewImage.src = e.target.result;
+            // Стискаємо зображення (робимо ресайз до оптимального розміру ~200-300 KB)
             compressedBase64 = compressAndResizeImage(img, 200, 300);
         };
         img.src = e.target.result;
@@ -88,12 +96,12 @@ photoUploadInput.addEventListener("change", function(event) {
     reader.readAsDataURL(file);
 });
 
-// Функція динамічного стиснення зображення
+// Функція стиснення зображення перед завантаженням у Firebase
 function compressAndResizeImage(img, minKB, maxKB) {
     const canvas = document.createElement("canvas");
     const ctx = canvas.getContext("2d");
 
-    const maxDimension = 1200;
+    const maxDimension = 1200; // Максимальна ширина/висота фото
     let width = img.width;
     let height = img.height;
 
@@ -113,10 +121,11 @@ function compressAndResizeImage(img, minKB, maxKB) {
     canvas.height = height;
     ctx.drawImage(img, 0, 0, width, height);
 
-    let quality = 0.90;
+    let quality = 0.85;
     let base64Result = "";
     let sizeInKB = 0;
 
+    // Цикл підбору якості для досягнення оптимального розміру
     for (let i = 0; i < 10; i++) {
         base64Result = canvas.toDataURL("image/jpeg", quality);
         sizeInKB = (base64Result.length * (3 / 4)) / 1024;
@@ -130,12 +139,10 @@ function compressAndResizeImage(img, minKB, maxKB) {
             break;
         }
     }
-
-    console.log(`Стиснено до: ${sizeInKB.toFixed(2)} KB (Якість: ${quality.toFixed(2)})`);
     return base64Result;
 }
 
-// Надсилання форми
+// 4. ВІДПРАВКА ДАНИХ У FIREBASE REALTIME DATABASE
 uploadForm.addEventListener("submit", function(e) {
     e.preventDefault();
 
@@ -151,22 +158,25 @@ uploadForm.addEventListener("submit", function(e) {
     }
 
     if (!lat || !lng) {
-        alert("Будь ласка, оберіть локацію на карті!");
+        alert("Будь ласка, позначте на карті місце зйомки!");
         return;
     }
 
     const photosRef = ref(database, 'photos');
     const newPhotoRef = push(photosRef);
 
+    // Зберігаємо інформацію про фото, локацію, технічні дані, автора та лайки
     const photoData = {
         userId: currentUser ? currentUser.uid : "anonymous",
+        username: currentUsername, // Записуємо ім'я автора
         imageText: compressedBase64,
         latitude: parseFloat(lat),
         longitude: parseFloat(lng),
         lens: lens || "Не вказано",
         camera: camera || "Не вказано",
         description: description || "",
-        timestamp: Date.now()
+        timestamp: Date.now(),
+        likes: {} // На початку список лайків порожній
     };
 
     set(newPhotoRef, photoData)
@@ -175,7 +185,7 @@ uploadForm.addEventListener("submit", function(e) {
             window.location.href = "index.html";
         })
         .catch((error) => {
-            console.error("Помилка відправки в базу:", error);
-            alert("Сталася помилка при збереженні.");
+            console.error("Помилка відправки даних:", error);
+            alert("Помилка при збереженні в базу.");
         });
 });

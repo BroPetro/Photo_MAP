@@ -30,15 +30,28 @@
 <button class="button_lacation"><img src="icons/MyLocation2.png" alt="Моя локація"></button>
 
 <div id="details-sidebar" class="details-sidebar">
-    <div class="sidebar-drag-handle"></div> <button class="sidebar-close-btn">&times;</button>
+    <div class="sidebar-drag-handle"></div>
+    <button class="sidebar-close-btn">&times;</button>
     
     <div class="sidebar-content">
         <div class="sidebar-image-container">
             <img id="sidebar-img" src="" alt="Детальне фото">
             <div class="zoom-hint">Натисніть, щоб збільшити</div>
+            
+            <button id="like-button" class="like-button">
+                <span class="like-icon">&#9825;</span> <span id="like-count" class="like-count">0</span>
+            </button>
         </div>
         
         <div class="sidebar-info-container">
+            <div class="author-container">
+                <img src="icons/Accaunt.png" alt="Avatar" class="author-avatar">
+                <div class="author-info">
+                    <span class="author-label">Опублікував</span>
+                    <span id="sidebar-author" class="author-name">Анонім</span>
+                </div>
+            </div>
+
             <p id="sidebar-description" class="sidebar-desc"></p>
             
             <div class="sidebar-specs">
