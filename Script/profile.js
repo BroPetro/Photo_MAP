@@ -212,4 +212,4 @@ if (btnSearch) {
     btnSearch.addEventListener("click", () => {
         window.location.href = "index.html"; // Наприклад, повертає на головну і відкриває пошук
     });
-}
+}s
