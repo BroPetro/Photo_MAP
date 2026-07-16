@@ -1,4 +1,4 @@
-const CACHE = "photomap-v0.5.3";
+const CACHE = "photomap-v0.6";
 
 const FILES = [
   "./",

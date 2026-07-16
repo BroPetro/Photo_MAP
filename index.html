@@ -20,24 +20,71 @@
 <body>
 
 <div id="map"></div>
+
 <div class="downbutton">
-  <button class="button_search"><img src="icons/Search.png"></button>
-  <button class="button_create"><img src="icons/AddPhoto2.png"></button>
-  <button class="button_profile"><img src="icons/Accaunt.png"></button>
+  <button class="button_search"><img src="icons/Search.png" alt="Пошук"></button>
+  <button class="button_create"><img src="icons/AddPhoto2.png" alt="Створити"></button>
+  <button class="button_profile"><img src="icons/Accaunt.png" alt="Профіль"></button>
 </div>
 
-<button class="button_lacation"><img src="icons/MyLocation2.png"></button>
+<button class="button_lacation"><img src="icons/MyLocation2.png" alt="Моя локація"></button>
+
+<div id="details-sidebar" class="details-sidebar">
+    <div class="sidebar-drag-handle"></div>
+    <button class="sidebar-close-btn">&times;</button>
+    
+    <div class="sidebar-content">
+        <div class="sidebar-image-container">
+            <img id="sidebar-img" src="" alt="Детальне фото">
+            <div class="zoom-hint">Натисніть, щоб збільшити</div>
+            
+            <button id="like-button" class="like-button">
+                <span class="like-icon">&#9825;</span> <span id="like-count" class="like-count">0</span>
+            </button>
+        </div>
+        
+        <div class="sidebar-info-container">
+            <div class="author-container">
+                <img src="icons/Accaunt.png" alt="Avatar" class="author-avatar">
+                <div class="author-info">
+                    <span class="author-label">Опублікував</span>
+                    <span id="sidebar-author" class="author-name">Анонім</span>
+                </div>
+            </div>
+
+            <p id="sidebar-description" class="sidebar-desc"></p>
+            
+            <div class="sidebar-specs">
+                <div class="spec-item">
+                    <span class="spec-label">Камера</span>
+                    <span id="sidebar-camera" class="spec-value"></span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Об'єктив</span>
+                    <span id="sidebar-lens" class="spec-value"></span>
+                </div>
+                <div class="spec-item">
+                    <span class="spec-label">Опубліковано</span>
+                    <span id="sidebar-date" class="spec-value"></span>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="fullscreen-overlay" class="fullscreen-overlay">
+    <button class="fullscreen-close">&times;</button>
+    <img id="fullscreen-img" src="" alt="Повнорозмірне фото">
+</div>
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
-<script src="Script/index.js"></script>
-<script src="Script/Map.js"></script>
+<script type="module" src="Script/index.js"></script>
 <script>
 if ("serviceWorker" in navigator) {
     window.addEventListener("load", () => {
         navigator.serviceWorker.register("./sw.js");
     });
 }
-
 </script>
 
 </body>
