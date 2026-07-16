@@ -132,3 +132,21 @@ fullscreenOverlay.addEventListener("click", (e) => {
         closeFullscreen();
     }
 });
+
+// Знаходимо кнопки на головній сторінці
+const buttonCreate = document.querySelector(".button_create");
+const buttonProfile = document.querySelector(".button_profile");
+
+// Кнопка додавання фото — перенаправляє на сторінку створення
+if (buttonCreate) {
+    buttonCreate.addEventListener("click", () => {
+        window.location.href = "CreatePhoto.html";
+    });
+}
+
+// Кнопка профілю — перенаправляє на сторінку профілю
+if (buttonProfile) {
+    buttonProfile.addEventListener("click", () => {
+        window.location.href = "profile.html";
+    });
+}
