@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>PhotoMAP | Профіль</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <link rel="icon" href="icons/icon-500x500-remove-bg.png">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css">
+    <link rel="stylesheet" href="Style/profile.css">
+</head>
+<body>
+    <div id="map"></div>
+
+    <div class="downbutton">
+        <button class="button_back"><img src="icons/Back.png" alt="Назад"></button>
+        <button class="button_search"><img src="icons/Search.png" alt="Пошук"></button>
+        <button class="button_create"><img src="icons/AddPhoto2.png" alt="Додати фото"></button>
+    </div>
+
+    <div class="container">
+        
+        <div class="left-div">
+            <div class="profile-header">
+                <h2>Профіль</h2>
+                <button class="btn-settings" id="open-settings-btn">
+                    <img src="icons/Settings.png" alt="Налаштування">
+                </button>
+            </div>
+            
+            <div class="profile-info-card">
+                <div class="profile-avatar-container">
+                    <img id="profile-avatar" src="icons/Accaunt.png" alt="Аватар">
+                </div>
+                
+                <h3 id="profile-username">Завантаження...</h3>
+                <p id="profile-bio"><i>Опис профілю відсутній</i></p>
+                
+                <div class="profile-stats">
+                    <div class="stat-item">
+                        <span class="stat-value" id="stats-photos-count">0</span>
+                        <span class="stat-label">світлин</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="right-div">
+            <h3>Мої фотографії</h3>
+            <div class="user-photos-grid" id="user-photos-grid">
+                <div class="no-photos-msg">Ви ще не завантажили жодного фото.</div>
+            </div>
+        </div>
+
+    </div>
+
+    <div class="modal-overlay" id="settings-modal">
+        <div class="modal-box">
+            <div class="modal-header">
+                <h3>Редагувати профіль</h3>
+                <button class="modal-close-btn" id="close-settings-btn">&times;</button>
+            </div>
+            
+            <form id="edit-profile-form">
+                <div class="edit-avatar-section">
+                    <label for="avatar-input" class="avatar-edit-label">
+                        <img id="avatar-preview" src="icons/Accaunt.png" alt="Прев'ю аватара">
+                        <span class="change-avatar-text">Змінити фото</span>
+                    </label>
+                    <input type="file" id="avatar-input" accept="image/*" hidden>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-username">Ім'я користувача</label>
+                    <input type="text" id="edit-username" placeholder="Введіть нове ім'я" required>
+                </div>
+
+                <div class="form-group">
+                    <label for="edit-bio">Про себе</label>
+                    <textarea id="edit-bio" rows="3" placeholder="Розкажіть щось цікаве..."></textarea>
+                </div>
+
+                <div class="modal-actions">
+                    <button type="button" class="btn-cancel" id="cancel-settings-btn">Скасувати</button>
+                    <button type="submit" class="btn-save">Зберегти</button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>
+    <script src="Script/Map_login.js"></script>
+    <script type="module" src="Script/profile.js"></script>
+</body>
+</html>
