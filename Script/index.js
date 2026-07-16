@@ -29,7 +29,11 @@ const sidebarDesc = document.getElementById("sidebar-description");
 const sidebarCamera = document.getElementById("sidebar-camera");
 const sidebarLens = document.getElementById("sidebar-lens");
 const sidebarDate = document.getElementById("sidebar-date");
-const sidebarAuthor = document.getElementById("sidebar-author"); // Додано елемент автора
+
+// Елементи автора (з вашого index.html)
+const sidebarAuthor = document.getElementById("sidebar-author");
+const authorContainer = document.querySelector(".author-container");
+const authorAvatar = document.querySelector(".author-avatar");
 
 // Елементи лайків
 const likeButton = document.getElementById("like-button");
@@ -41,7 +45,7 @@ const fullscreenOverlay = document.getElementById("fullscreen-overlay");
 const fullscreenImg = document.getElementById("fullscreen-img");
 const fullscreenClose = document.querySelector(".fullscreen-close");
 
-// Зберігатимемо ID відкритої наразі фотографії
+// ID відкритої наразі фотографії
 let currentOpenedPhotoId = null; 
 
 // Ініціалізація карти
@@ -103,15 +107,50 @@ onValue(photosRef, (snapshot) => {
             marker.on('click', () => {
                 currentOpenedPhotoId = key; // Запам'ятовуємо ID поточної фотографії
 
-                // Заповнюємо даними
+                // Безпечно заповнюємо деталі фото
                 if (sidebarImg) sidebarImg.src = photo.imageText;
                 if (sidebarDesc) sidebarDesc.innerHTML = photo.description ? photo.description.replace(/\n/g, '<br>') : '<i>Без опису</i>';
                 if (sidebarCamera) sidebarCamera.textContent = photo.camera || "Не вказано";
                 if (sidebarLens) sidebarLens.textContent = photo.lens || "Не вказано";
-                if (sidebarAuthor) sidebarAuthor.textContent = photo.username || "Анонім"; // Показуємо автора!
                 
                 const publishDate = photo.timestamp ? new Date(photo.timestamp).toLocaleDateString("uk-UA") : "Невідомо";
                 if (sidebarDate) sidebarDate.textContent = publishDate;
+
+                // --- Завантаження профілю автора ---
+                // Тимчасово ставимо дефолтні дані, поки завантажується інфо з бази
+                if (sidebarAuthor) sidebarAuthor.textContent = photo.username || "Анонім";
+                if (authorAvatar) authorAvatar.src = "icons/Accaunt.png"; 
+                if (authorContainer) {
+                    authorContainer.style.cursor = "default";
+                    authorContainer.onclick = null;
+                }
+
+                // Перевіряємо, чи є в запису про фото UID автора ( userId або uid )
+                const authorUid = photo.userId || photo.uid;
+
+                if (authorUid) {
+                    // Зчитуємо актуальне ім'я та аватар користувача з гілки 'users/USER_ID'
+                    const authorRef = ref(database, `users/${authorUid}`);
+                    onValue(authorRef, (userSnapshot) => {
+                        const userData = userSnapshot.val();
+                        if (userData) {
+                            if (sidebarAuthor) {
+                                sidebarAuthor.textContent = userData.username || photo.username || "Анонім";
+                            }
+                            if (authorAvatar && userData.avatar) {
+                                authorAvatar.src = userData.avatar; // Встановлюємо фото автора
+                            }
+                        }
+                    }, { onlyOnce: true });
+
+                    // Робимо весь контейнер автора клікабельним для переходу на його сторінку
+                    if (authorContainer) {
+                        authorContainer.style.cursor = "pointer";
+                        authorContainer.onclick = () => {
+                            window.location.href = `profile.html?uid=${authorUid}`;
+                        };
+                    }
+                }
 
                 // Налаштовуємо лайки для цієї фотографії
                 updateLikesUI(photo.likes);
@@ -119,7 +158,7 @@ onValue(photosRef, (snapshot) => {
                 // Плавно центруємо карту трохи вище від маркера
                 const targetPoint = map.project([photo.latitude, photo.longitude], map.getZoom());
                 if (window.innerWidth < 768) {
-                    targetPoint.y += 120; // посунемо вниз, щоб маркер не ховався під шторку
+                    targetPoint.y += 120; // посунемо вниз на смартфонах
                 } else {
                     targetPoint.x -= 100; // на ПК посунемо вправо від панелі
                 }
