@@ -29,7 +29,11 @@ const sidebarDesc = document.getElementById("sidebar-description");
 const sidebarCamera = document.getElementById("sidebar-camera");
 const sidebarLens = document.getElementById("sidebar-lens");
 const sidebarDate = document.getElementById("sidebar-date");
-const sidebarAuthor = document.getElementById("sidebar-author"); // Додано елемент автора
+
+// Нові елементи для профілю автора у шторці
+const sidebarAuthor = document.getElementById("sidebar-author"); 
+const sidebarAuthorAvatar = document.getElementById("sidebar-author-avatar"); // Елемент аватара автора
+const sidebarAuthorLink = document.getElementById("sidebar-author-link");     // Блок-посилання на профіль
 
 // Елементи лайків
 const likeButton = document.getElementById("like-button");
@@ -103,15 +107,51 @@ onValue(photosRef, (snapshot) => {
             marker.on('click', () => {
                 currentOpenedPhotoId = key; // Запам'ятовуємо ID поточної фотографії
 
-                // Заповнюємо даними
+                // Заповнюємо базовими даними
                 if (sidebarImg) sidebarImg.src = photo.imageText;
                 if (sidebarDesc) sidebarDesc.innerHTML = photo.description ? photo.description.replace(/\n/g, '<br>') : '<i>Без опису</i>';
                 if (sidebarCamera) sidebarCamera.textContent = photo.camera || "Не вказано";
                 if (sidebarLens) sidebarLens.textContent = photo.lens || "Не вказано";
-                if (sidebarAuthor) sidebarAuthor.textContent = photo.username || "Анонім"; // Показуємо автора!
                 
                 const publishDate = photo.timestamp ? new Date(photo.timestamp).toLocaleDateString("uk-UA") : "Невідомо";
                 if (sidebarDate) sidebarDate.textContent = publishDate;
+
+                // --- Динамічне відображення автора та його аватара ---
+                // За замовчуванням ставимо анонімні дані
+                if (sidebarAuthor) sidebarAuthor.textContent = "Анонім";
+                if (sidebarAuthorAvatar) sidebarAuthorAvatar.src = "icons/default-avatar.png"; // Вкажіть правильний шлях до дефолтного аватара
+                
+                // Якщо у фотографії збережений ID автора ( userId або uid )
+                const authorUid = photo.userId || photo.uid; 
+                
+                if (authorUid) {
+                    // Зчитуємо актуальну інформацію про цього автора прямо з бази користувачів (наприклад, з гілки 'users/USER_ID')
+                    const authorRef = ref(database, `users/${authorUid}`);
+                    onValue(authorRef, (userSnapshot) => {
+                        const userData = userSnapshot.val();
+                        if (userData) {
+                            if (sidebarAuthor) sidebarAuthor.textContent = userData.username || photo.username || "Анонім";
+                            if (sidebarAuthorAvatar && userData.avatar) {
+                                sidebarAuthorAvatar.src = userData.avatar; // Встановлюємо завантажений аватар користувача
+                            }
+                        } else {
+                            // Якщо у базі немає окремої гілки користувача, використовуємо збережене ім'я з об'єкта фото
+                            if (sidebarAuthor) sidebarAuthor.textContent = photo.username || "Анонім";
+                        }
+                    }, { onlyOnce: true });
+
+                    // Робимо блок автора клікабельним для переходу на його сторінку
+                    if (sidebarAuthorLink) {
+                        sidebarAuthorLink.onclick = () => {
+                            // Перенаправляємо на profile.html з query-параметром uid
+                            window.location.href = `profile.html?uid=${authorUid}`;
+                        };
+                    }
+                } else {
+                    // Якщо автора взагалі немає в базі (старі записи)
+                    if (sidebarAuthor) sidebarAuthor.textContent = photo.username || "Анонім";
+                    if (sidebarAuthorLink) sidebarAuthorLink.onclick = null; // забираємо клікабельність
+                }
 
                 // Налаштовуємо лайки для цієї фотографії
                 updateLikesUI(photo.likes);
