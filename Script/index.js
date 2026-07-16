@@ -44,15 +44,18 @@ if (navigator.geolocation) {
     });
 }
 
-buttonLocation.addEventListener("click", function () {
-    if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(function(position) {
-            const lat = position.coords.latitude;
-            const lng = position.coords.longitude;
-            map.setView([lat, lng], 14);
-        });
-    }
-});
+// БЕЗПЕЧНА ПЕРЕВІРКА кнопки локації (запобігає падінню скрипту)
+if (buttonLocation) {
+    buttonLocation.addEventListener("click", function () {
+        if (navigator.geolocation) {
+            navigator.geolocation.getCurrentPosition(function(position) {
+                const lat = position.coords.latitude;
+                const lng = position.coords.longitude;
+                map.setView([lat, lng], 14);
+            });
+        }
+    });
+}
 
 // --- ЗЧИТУВАННЯ ФОТОГРАФІЙ З БАЗИ ---
 const photosRef = ref(database, 'photos');
@@ -80,15 +83,15 @@ onValue(photosRef, (snapshot) => {
             // КЛІК НА МАРКЕР — Відкриття деталей у шторці
             marker.on('click', () => {
                 // Заповнюємо даними
-                sidebarImg.src = photo.imageText;
-                sidebarDesc.innerHTML = photo.description ? photo.description.replace(/\n/g, '<br>') : '<i>Без опису</i>';
-                sidebarCamera.textContent = photo.camera || "Не вказано";
-                sidebarLens.textContent = photo.lens || "Не вказано";
+                if (sidebarImg) sidebarImg.src = photo.imageText;
+                if (sidebarDesc) sidebarDesc.innerHTML = photo.description ? photo.description.replace(/\n/g, '<br>') : '<i>Без опису</i>';
+                if (sidebarCamera) sidebarCamera.textContent = photo.camera || "Не вказано";
+                if (sidebarLens) sidebarLens.textContent = photo.lens || "Не вказано";
                 
                 const publishDate = photo.timestamp ? new Date(photo.timestamp).toLocaleDateString("uk-UA") : "Невідомо";
-                sidebarDate.textContent = publishDate;
+                if (sidebarDate) sidebarDate.textContent = publishDate;
 
-                // Плавно центруємо карту трохи вище від маркера (особливо зручно на телефонах)
+                // Плавно центруємо карту трохи вище від маркера
                 const targetPoint = map.project([photo.latitude, photo.longitude], map.getZoom());
                 if (window.innerWidth < 768) {
                     targetPoint.y += 120; // посунемо вниз, щоб маркер не ховався під шторку
@@ -98,7 +101,7 @@ onValue(photosRef, (snapshot) => {
                 map.panTo(map.unproject(targetPoint, map.getZoom()), { animate: true, duration: 0.6 });
 
                 // Відкриваємо шторку деталей
-                sidebar.classList.add("active");
+                if (sidebar) sidebar.classList.add("active");
             });
         }
     });
@@ -106,32 +109,36 @@ onValue(photosRef, (snapshot) => {
 
 // Закриття панелі деталей
 const closeSidebar = () => {
-    sidebar.classList.remove("active");
+    if (sidebar) sidebar.classList.remove("active");
 };
-sidebarClose.addEventListener("click", closeSidebar);
-sidebarDragHandle.addEventListener("click", closeSidebar);
+if (sidebarClose) sidebarClose.addEventListener("click", closeSidebar);
+if (sidebarDragHandle) sidebarDragHandle.addEventListener("click", closeSidebar);
 
 // Клік на мапу закриває панель деталей
 map.on("click", closeSidebar);
 
 // --- ПОВНОЕКРАННИЙ ПЕРЕГЛЯД ЗОБРАЖЕННЯ ---
-sidebarImg.addEventListener("click", () => {
-    if (sidebarImg.src) {
-        fullscreenImg.src = sidebarImg.src;
-        fullscreenOverlay.classList.add("active");
-    }
-});
+if (sidebarImg) {
+    sidebarImg.addEventListener("click", () => {
+        if (sidebarImg.src && fullscreenImg && fullscreenOverlay) {
+            fullscreenImg.src = sidebarImg.src;
+            fullscreenOverlay.classList.add("active");
+        }
+    });
+}
 
 const closeFullscreen = () => {
-    fullscreenOverlay.classList.remove("active");
+    if (fullscreenOverlay) fullscreenOverlay.classList.remove("active");
 };
 
-fullscreenClose.addEventListener("click", closeFullscreen);
-fullscreenOverlay.addEventListener("click", (e) => {
-    if (e.target !== fullscreenImg) {
-        closeFullscreen();
-    }
-});
+if (fullscreenClose) fullscreenClose.addEventListener("click", closeFullscreen);
+if (fullscreenOverlay) {
+    fullscreenOverlay.addEventListener("click", (e) => {
+        if (e.target !== fullscreenImg) {
+            closeFullscreen();
+        }
+    });
+}
 
 // Знаходимо кнопки на головній сторінці
 const buttonCreate = document.querySelector(".button_create");
