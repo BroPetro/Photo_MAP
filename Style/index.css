@@ -580,3 +580,42 @@ html, body {
     100% { transform: scale(1); }
 }
 
+/* Стилі для поля пошуку */
+.search-input-field {
+    position: absolute;
+    bottom: 85px; /* З'являється над панеллю кнопок */
+    left: 50%;
+    transform: translateX(-50%) scale(0.9);
+    width: 90%;
+    max-width: 350px;
+    height: 45px;
+    padding: 0 20px;
+    border-radius: 25px;
+    border: 1px solid rgba(255, 255, 255, 0.3);
+    background: rgba(255, 255, 255, 0.6);
+    backdrop-filter: blur(15px);
+    -webkit-backdrop-filter: blur(15px);
+    color: #111;
+    font-size: 14px;
+    outline: none;
+    box-shadow: 0 8px 25px rgba(0, 0, 0, 0.1);
+    opacity: 0;
+    pointer-events: none;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-sizing: border-box;
+}
+
+/* Стан, коли пошук активовано */
+.search-input-field.active {
+    opacity: 1;
+    pointer-events: auto;
+    transform: translateX(-50%) scale(1);
+}
+
+/* Адаптивність під мобільні телефони */
+@media (max-width: 768px) {
+    .search-input-field {
+        width: calc(100% - 20px);
+        bottom: 80px;
+    }
+}

@@ -1,6 +1,8 @@
 import { auth, database } from "./firebase.js";
 import { onAuthStateChanged } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-auth.js";
 import { ref, onValue, set, remove } from "https://www.gstatic.com/firebasejs/12.0.0/firebase-database.js";
+// Імпортуємо функцію пошуку з нового файлу search.js
+import { initSearch } from "./search.js";
 
 let currentUser = null;
 
@@ -30,8 +32,8 @@ const sidebarCamera = document.getElementById("sidebar-camera");
 const sidebarLens = document.getElementById("sidebar-lens");
 const sidebarDate = document.getElementById("sidebar-date");
 
-// Елементи автора (з вашого index.html)
-const sidebarAuthor = document.getElementById("sidebar-author");
+// Елементи автора та профілю у шторці
+const sidebarAuthor = document.getElementById("sidebar-author"); 
 const authorContainer = document.querySelector(".author-container");
 const authorAvatar = document.querySelector(".author-avatar");
 
@@ -45,8 +47,11 @@ const fullscreenOverlay = document.getElementById("fullscreen-overlay");
 const fullscreenImg = document.getElementById("fullscreen-img");
 const fullscreenClose = document.querySelector(".fullscreen-close");
 
-// ID відкритої наразі фотографії
+// Зберігатимемо ID відкритої наразі фотографії
 let currentOpenedPhotoId = null; 
+
+// Створюємо структуру (Map) для збереження маркерів, щоб пошук міг ними керувати
+const markersMap = new Map();
 
 // Ініціалізація карти
 const map = L.map('map', {
@@ -54,6 +59,9 @@ const map = L.map('map', {
 }).setView([20, 0], 2);
 
 L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png').addTo(map);
+
+// Ініціалізуємо логіку пошуку та передаємо туди карту й колекцію наших маркерів
+initSearch(map, markersMap);
 
 // Отримання поточної геолокації
 if (navigator.geolocation) {
@@ -87,6 +95,10 @@ onValue(photosRef, (snapshot) => {
     const data = snapshot.val();
     if (!data) return;
 
+    // Очищаємо карту від старих маркерів перед новим рендером (запобігає дублюванню)
+    markersMap.forEach(({ marker }) => map.removeLayer(marker));
+    markersMap.clear();
+
     Object.keys(data).forEach((key) => {
         const photo = data[key];
 
@@ -103,11 +115,14 @@ onValue(photosRef, (snapshot) => {
             // Створюємо маркер
             const marker = L.marker([photo.latitude, photo.longitude], { icon: photoIcon }).addTo(map);
 
+            // Зберігаємо маркер та інформацію про фото в Map для пошукового скрипту
+            markersMap.set(key, { marker: marker, photo: photo });
+
             // КЛІК НА МАРКЕР — Відкриття деталей у шторці
             marker.on('click', () => {
                 currentOpenedPhotoId = key; // Запам'ятовуємо ID поточної фотографії
 
-                // Безпечно заповнюємо деталі фото
+                // Безпечно заповнюємо деталі
                 if (sidebarImg) sidebarImg.src = photo.imageText;
                 if (sidebarDesc) sidebarDesc.innerHTML = photo.description ? photo.description.replace(/\n/g, '<br>') : '<i>Без опису</i>';
                 if (sidebarCamera) sidebarCamera.textContent = photo.camera || "Не вказано";
@@ -116,34 +131,31 @@ onValue(photosRef, (snapshot) => {
                 const publishDate = photo.timestamp ? new Date(photo.timestamp).toLocaleDateString("uk-UA") : "Невідомо";
                 if (sidebarDate) sidebarDate.textContent = publishDate;
 
-                // --- Завантаження профілю автора ---
-                // Тимчасово ставимо дефолтні дані, поки завантажується інфо з бази
+                // --- Відображення автора та його аватара ---
                 if (sidebarAuthor) sidebarAuthor.textContent = photo.username || "Анонім";
-                if (authorAvatar) authorAvatar.src = "icons/Accaunt.png"; 
+                if (authorAvatar) authorAvatar.src = "icons/Accaunt.png"; // Початкова заглушка
                 if (authorContainer) {
                     authorContainer.style.cursor = "default";
                     authorContainer.onclick = null;
                 }
 
-                // Перевіряємо, чи є в запису про фото UID автора ( userId або uid )
-                const authorUid = photo.userId || photo.uid;
-
+                // Визначаємо унікальний UID автора ( userId або uid )
+                const authorUid = photo.userId || photo.uid; 
+                
                 if (authorUid) {
-                    // Зчитуємо актуальне ім'я та аватар користувача з гілки 'users/USER_ID'
+                    // Тягнемо з бази свіжий аватар та ім'я користувача
                     const authorRef = ref(database, `users/${authorUid}`);
                     onValue(authorRef, (userSnapshot) => {
                         const userData = userSnapshot.val();
                         if (userData) {
-                            if (sidebarAuthor) {
-                                sidebarAuthor.textContent = userData.username || photo.username || "Анонім";
-                            }
+                            if (sidebarAuthor) sidebarAuthor.textContent = userData.username || photo.username || "Анонім";
                             if (authorAvatar && userData.avatar) {
-                                authorAvatar.src = userData.avatar; // Встановлюємо фото автора
+                                authorAvatar.src = userData.avatar; // Актуальний аватар з Firebase
                             }
                         }
                     }, { onlyOnce: true });
 
-                    // Робимо весь контейнер автора клікабельним для переходу на його сторінку
+                    // Робимо блок автора клікабельним для переходу на profile.html
                     if (authorContainer) {
                         authorContainer.style.cursor = "pointer";
                         authorContainer.onclick = () => {
@@ -158,7 +170,7 @@ onValue(photosRef, (snapshot) => {
                 // Плавно центруємо карту трохи вище від маркера
                 const targetPoint = map.project([photo.latitude, photo.longitude], map.getZoom());
                 if (window.innerWidth < 768) {
-                    targetPoint.y += 120; // посунемо вниз на смартфонах
+                    targetPoint.y += 120; // посунемо вниз, щоб маркер не ховався під шторку
                 } else {
                     targetPoint.x -= 100; // на ПК посунемо вправо від панелі
                 }
